@@ -77,6 +77,31 @@ class ImageBoxComponent extends React.Component{
 	}
 }
 
+class ControllerComponent extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleClick = this.handleClick.bind(this);
+	}
+	handleClick(e){
+		e.stopPropagation();
+		e.preventDefault();
+		if(this.props.arrange.isCenter){
+			this.props.inverse();
+		}else{
+			this.props.iscenter();
+		}
+
+	}
+	render(){
+		let conUnitClassname = 'controller-unit';
+		conUnitClassname += this.props.arrange.isCenter ? ' is-center' : '';
+		conUnitClassname += this.props.arrange.isInverse ? ' is-inverse' : '';
+		return(
+			<div><span className={conUnitClassname} onClick={this.handleClick}></span></div>
+		)
+	}
+}
+
 class AppComponent extends React.Component {
 	constructor(props){
 		super (props);
@@ -129,7 +154,7 @@ class AppComponent extends React.Component {
 			vPosRangeTopY = vPosRange.topY,
 
 			imgsRangTopArr = [],
-			topImgNum = Math.ceil(Math.random()*2),
+			topImgNum = Math.floor(Math.random()*2),
 			topImgSplicIndex = 0,
 			imgsRangCenterArr = imgsRangArr.splice(centerIndex,1);
 
@@ -221,7 +246,8 @@ class AppComponent extends React.Component {
 	}
 	render() {
 		// let sliserNum = [];
-		let imagesList = [];
+		let imagesList = [],
+			controllerList = [];
 		imagesData.forEach((value,index)=>{
 
 			//将所有图片都定位到了左上角
@@ -237,7 +263,7 @@ class AppComponent extends React.Component {
 				}
 			}
 			imagesList.push(<ImageBoxComponent data={value} key={index} ref={'imgFigure' + index} arrange={this.state.imgsRangArr[index]} inverse={this.isInverseFun(index)} iscenter={this.isCenterFun(index)}/>);
-
+			controllerList.push(<ControllerComponent data={value} key={index} arrange={this.state.imgsRangArr[index]} inverse={this.isInverseFun(index)} iscenter={this.isCenterFun(index)}/>);
 		});
 
 		return (
@@ -245,7 +271,9 @@ class AppComponent extends React.Component {
 				<section className="img-list">
 					{imagesList}
 				</section>
-				<nav className="nav-list"></nav>
+				<nav className="nav-list">
+					{controllerList}
+				</nav>
 			</div>
 		);
 	}
